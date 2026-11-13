@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0058A3">
+<title>Tareas PPS · IKEA CD</title>
+<style>
+:root{--azul:#0058A3;--azul2:#003f78;--amarillo:#FFDB00;--bg:#f2f4f7;--card:#fff;--txt:#1d2733;--sub:#66727f;--linea:#e3e7ec;
+  --verde:#2e7d32;--ambar:#f9a825;--rojo:#c62828;--morado:#7b1fa2;--gris:#78909c;--lw:240px}
+*{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden;-webkit-text-size-adjust:100%;background:var(--bg);color:var(--txt);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+
+/* LOGIN */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,var(--azul) 0%,var(--azul2) 100%)}
+.login-box{background:#fff;border-radius:18px;padding:28px 24px;width:100%;max-width:360px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.login-box .logo{width:72px;height:72px;margin:0 auto 10px;border-radius:16px;background:var(--amarillo);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--azul);font-size:22px;overflow:hidden}
+.login-box .logo img{width:100%;height:100%;object-fit:contain}
+.login-box h1{font-size:20px;margin:6px 0 2px;color:var(--azul)}
+.login-box p{margin:0 0 18px;color:var(--sub);font-size:13px}
+.pin-in{width:100%;text-align:center;font-size:26px;letter-spacing:10px;padding:12px;border:2px solid var(--linea);border-radius:12px;outline:none}
+.pin-in:focus{border-color:var(--azul)}
+.demo-note{margin-top:14px;font-size:12px;background:#fff8d6;border:1px solid #f0d860;border-radius:10px;padding:8px 10px;color:#5d4a00;text-align:left}
+
+/* HEADER */
+header{background:var(--azul);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:20;padding-top:max(10px,env(safe-area-inset-top))}
+header .logo{width:36px;height:36px;border-radius:9px;background:var(--amarillo);color:var(--azul);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none;overflow:hidden}
+header .logo img{width:100%;height:100%;object-fit:contain}
+header .tit{flex:1;min-width:0}
+header .tit b{display:block;font-size:15px}
+header .tit small{opacity:.85;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.hbtn{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:9px;padding:7px 10px;font-size:13px}
+.sync{font-size:11px;padding:4px 8px;border-radius:20px;background:rgba(255,255,255,.18);white-space:nowrap}
+.sync.off{background:var(--rojo)} .sync.pend{background:var(--amarillo);color:#333}
+
+nav#tabs{display:flex;background:#fff;border-bottom:1px solid var(--linea);position:sticky;top:var(--hh,56px);z-index:19;overflow-x:auto}
+nav#tabs button{flex:1;border:0;background:none;padding:12px 10px;font-weight:600;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap}
+nav#tabs button.on{color:var(--azul);border-bottom-color:var(--amarillo)}
+main{padding:14px clamp(10px,2vw,28px) 40px;width:100%;max-width:2200px;margin:0 auto}
+.demo-bar{background:#fff8d6;color:#5d4a00;font-size:12px;padding:6px 14px;text-align:center;border-bottom:1px solid #f0d860}
+
+/* COMUNES */
+h2{font-size:16px;margin:18px 0 10px;color:var(--azul2);display:flex;align-items:center;gap:8px}
+h2 .n{background:var(--azul);color:#fff;border-radius:20px;font-size:11px;padding:1px 8px}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:600;background:#e8edf3;color:var(--txt)}
+.btn.primary{background:var(--azul);color:#fff}
+.btn.yellow{background:var(--amarillo);color:#222}
+.btn.green{background:var(--verde);color:#fff}
+.btn.red{background:var(--rojo);color:#fff}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
+.btn:disabled{opacity:.5}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.chip{border:1px solid var(--linea);background:#fff;border-radius:20px;padding:6px 12px;font-size:13px;color:var(--sub)}
+.chip.on{background:var(--azul);border-color:var(--azul);color:#fff}
+.pill{display:inline-block;color:#fff;border-radius:20px;font-size:11px;font-weight:700;padding:2px 9px;white-space:nowrap}
+.vacio{text-align:center;color:var(--sub);padding:30px 10px;background:#fff;border-radius:14px;border:1px dashed var(--linea)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,45%),1fr));gap:10px}
+.kpi{background:#fff;border-radius:14px;padding:12px 14px;border-top:4px solid var(--azul);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.kpi b{font-size:26px;display:block;line-height:1.1}
+.kpi span{font-size:12px;color:var(--sub)}
+
+/* TARJETAS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:10px}
+.card{background:var(--card);border-radius:14px;padding:12px 14px;border-left:6px solid var(--gris);box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer;transition:transform .1s}
+.card:active{transform:scale(.99)}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.tid{font-size:11px;font-weight:700;color:var(--sub)}
+.card h3{font-size:15px;margin:6px 0 4px}
+.meta{font-size:12px;color:var(--sub)}
+.bar{height:9px;background:#eceff3;border-radius:6px;overflow:hidden;margin:9px 0 5px}
+.bar>div{height:100%;border-radius:6px;transition:width .3s}
+.meta2{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
+.meta2 b{color:var(--txt)}
+.prio-Alta{color:var(--rojo);font-weight:700}.prio-Media{color:#e65100;font-weight:600}.prio-Baja{color:var(--verde)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.modal-box{background:#fff;width:100%;max-width:min(760px,100%);max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px 26px;animation:sube .2s ease-out}
+@media(min-width:700px){.modal{align-items:center}.modal-box{border-radius:18px}}
+@keyframes sube{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.mh h3{margin:2px 0 4px;font-size:17px}
+.x{border:0;background:#eef1f5;border-radius:50%;width:32px;height:32px;font-size:18px;flex:none}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:6px 14px;font-size:13px;margin:10px 0;background:#f6f8fb;border-radius:12px;padding:10px 12px}
+.info span{color:var(--sub);font-size:11px;display:block}
+.desc{white-space:pre-wrap;font-size:13px;margin:8px 0;color:#333}
+.box{border:1px solid var(--linea);border-radius:14px;padding:12px;margin:12px 0}
+.box h4{margin:0 0 8px;font-size:14px;color:var(--azul2)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.seg button{border:1px solid var(--linea);background:#fff;border-radius:10px;padding:8px 4px;font-size:12px;font-weight:600}
+.seg button.on{background:var(--azul);border-color:var(--azul);color:#fff}
+input[type=range]{width:100%;accent-color:var(--azul);height:30px}
+.fld{display:block;margin:10px 0 0}
+.fld>span{display:block;font-size:12px;color:var(--sub);margin-bottom:4px;font-weight:600}
+.fld input,.fld select,.fld textarea{width:100%;border:1px solid #cfd6de;border-radius:10px;padding:10px;background:#fff;outline:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--azul)}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:10px}
+.fld input,.fld select,.fld textarea{min-width:0;max-width:100%}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.acciones .btn{flex:1}
+
+/* BITÁCORA */
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 12px 22px;font-size:13px}
+.tl li:before{content:"";position:absolute;left:5px;top:6px;bottom:-6px;width:2px;background:var(--linea)}
+.tl li:last-child:before{display:none}
+.tl li i{position:absolute;left:0;top:3px;width:12px;height:12px;border-radius:50%;background:var(--gris);border:2px solid #fff;box-shadow:0 0 0 1px var(--linea)}
+.tl .h{font-size:11px;color:var(--sub)}
+.tl .c{white-space:pre-wrap}
+.pend{font-size:10px;background:var(--amarillo);border-radius:6px;padding:0 5px;margin-left:4px}
+
+/* GANTT */
+.g-ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.g-ctrl select{border:1px solid #cfd6de;border-radius:10px;padding:8px;background:#fff}
+.g-wrap{overflow:auto;background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);max-height:calc(100vh - 230px);position:relative}
+.g-row{display:flex;width:max-content;border-bottom:1px solid #eef1f4;min-height:46px}
+.g-lab{position:sticky;left:0;z-index:2;background:#fff;width:var(--lw);flex:none;padding:6px 10px;border-right:1px solid var(--linea);cursor:pointer;overflow:hidden}
+.g-lab b{font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-lab small{font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.g-track{position:relative;flex:none}
+.g-bar{position:absolute;top:11px;height:24px;border-radius:7px;background:#e9edf2;border:2px solid;overflow:hidden;cursor:pointer;min-width:6px}
+.g-bar .f{position:absolute;left:0;top:0;bottom:0;opacity:.9}
+.g-bar span{position:relative;font-size:11px;font-weight:700;padding:0 6px;line-height:20px;color:#1d2733;white-space:nowrap;text-shadow:0 0 3px #fff}
+.g-today{position:absolute;top:0;bottom:0;width:2px;background:var(--rojo);z-index:1;opacity:.75}
+.g-head{position:sticky;top:0;z-index:4;background:#f7f9fb;min-height:56px;border-bottom:2px solid var(--linea)}
+.g-head .g-lab{background:#f7f9fb;z-index:5;font-weight:700;color:var(--azul2);display:flex;align-items:center}
+.g-h{position:absolute;font-size:10.5px;color:var(--sub);white-space:nowrap}
+.g-h.m{top:3px;font-weight:700;color:var(--azul2);font-size:11.5px;text-transform:capitalize}
+.g-h.d{bottom:4px;text-align:center}
+.g-h.d.we{color:#b0b8c1}
+.g-h.t{bottom:0;background:var(--rojo);color:#fff;border-radius:4px 4px 0 0;padding:0 4px;font-weight:700}
+.leyenda{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin-top:10px}
+.leyenda i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-2px}
+@media(max-width:600px){:root{--lw:135px}}
+@media(min-width:1400px){:root{--lw:320px}}
+/* Celular: pestañas compactas que siempre caben, inputs sin zoom en iOS */
+@media(max-width:700px){
+  nav#tabs{display:grid;grid-template-columns:repeat(var(--ntabs,4),1fr);overflow:visible}
+  nav#tabs button{padding:8px 2px 7px;font-size:11px;line-height:1.2;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:normal}
+  nav#tabs button .ic{font-size:18px}
+  .fld input,.fld select,.fld textarea,.g-ctrl select,.pin-in{font-size:16px}
+  header{gap:6px;padding-left:10px;padding-right:10px}
+  header .hbtn{padding:7px 8px}
+  .sync{font-size:10px;padding:3px 6px}
+  .card h3{font-size:14.5px}
+  .kpi b{font-size:22px}
+  .g-ctrl select{flex:1 1 45%;min-width:0}
+}
+
+/* TABLAS */
+.tabla{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);font-size:13px}
+.tabla th{background:var(--azul);color:#fff;text-align:left;padding:9px 10px;font-weight:600;font-size:12px}
+.tabla td{padding:9px 10px;border-bottom:1px solid #eef1f4}
+.tabla tr:last-child td{border-bottom:0}
+.scroll-x{overflow-x:auto;border-radius:14px}
+.mini{height:8px;background:#eceff3;border-radius:5px;overflow:hidden;min-width:70px}
+.mini>div{height:100%;background:var(--azul)}
+.feed{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.feed .it{padding:8px 0;border-bottom:1px solid #eef1f4;font-size:13px;cursor:pointer}
+.feed .it:last-child{border-bottom:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.two{grid-template-columns:1fr}}
+
+.sup-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(620px,100%),1fr));gap:12px;align-items:start}
+.sup-wrap .sup-g{margin-bottom:0}
+.top-acc{margin-top:0}
+@media(min-width:701px){.top-acc .btn{flex:0 0 auto;padding:10px 22px}}
+.sup-g{background:#fff;border-radius:14px;border-left:6px solid;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:12px;overflow:hidden}
+.sup-h{padding:10px 14px;background:#f8fafc;border-bottom:1px solid #eef1f4}
+.sup-it{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid #eef1f4;cursor:pointer}
+.sup-it:last-child{border-bottom:0}
+.sup-l{flex:1;min-width:0}
+.sup-a{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:50%}
+@media(max-width:600px){.sup-it{flex-direction:column;align-items:stretch}.sup-a{max-width:none;justify-content:stretch}.sup-a>*{flex:1}}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+#toast div{background:#1d2733;color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:90vw}
+#toast .err{background:var(--rojo)} #toast .warn{background:#e65100} #toast .ok{background:var(--verde)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:g .8s linear infinite;vertical-align:-2px}
+@keyframes g{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <div class="logo" id="login-logo">PPS</div>
+    <h1>Tareas PPS</h1>
+    <p>Prevención de Pérdidas y Seguridad · IKEA CD</p>
+    <form id="f-login" autocomplete="off">
+      <input class="pin-in" id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" autofocus>
+      <button class="btn primary" style="width:100%;margin-top:12px;padding:13px" id="b-login">Ingresar</button>
+    </form>
+    <div class="demo-note" id="demo-note" hidden>
+      <b>Modo demostración</b> — datos de prueba guardados solo en este navegador.<br>
+      PIN admin: <b>1234</b> · Integrantes: <b>1111</b>, <b>2222</b>, <b>3333</b><br>
+      <a href="#" id="reset-demo">Restablecer datos demo</a>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" hidden>
+  <header>
+    <div class="logo" id="h-logo">PPS</div>
+    <div class="tit"><b>Tareas PPS</b><small id="h-user"></small></div>
+    <span class="sync" id="sync">●</span>
+    <button class="hbtn" id="b-ref" title="Actualizar">⟳</button>
+    <button class="hbtn" id="b-out">Salir</button>
+  </header>
+  <div class="demo-bar" id="demo-bar" hidden>Modo demostración · configura API_URL para conectar con Google Sheets</div>
+  <nav id="tabs">
+    <button data-v="mis" class="on" id="tab-mis"><span class="ic">📋</span> Mis tareas</button>
+    <button data-v="sup" id="tab-sup" hidden><span class="ic">🎯</span> Supervisión</button>
+    <button data-v="gantt"><span class="ic">📊</span> Carta Gantt</button>
+    <button data-v="dash"><span class="ic">📈</span> Resumen</button>
+    <button data-v="admin" id="tab-admin" hidden><span class="ic">⚙️</span> Administrar</button>
+  </nav>
+  <main>
+    <section id="v-mis"></section>
+    <section id="v-sup" hidden></section>
+    <section id="v-gantt" hidden></section>
+    <section id="v-dash" hidden></section>
+    <section id="v-admin" hidden></section>
+  </main>
+</div>
+
+<div class="modal" id="modal" hidden><div class="modal-box" id="mbox"></div></div>
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   CONFIGURACIÓN
+   ========================================================= */
+const API_URL = '';   // ← Pega aquí la URL /exec de Apps Script. Vacío = modo demo.
+const LOGO = '';      // ← Opcional: escudo PPS en base64 ('data:image/png;base64,...')
+const CATEGORIAS = ['CCTV / Investigación','Aduana','Auditoría','Control de acceso','Inventario / Mermas','Capacitación','Administrativa','Otra'];
+
+/* ========================================================= */
+const DEMO = !API_URL;
+const K = {pin:'tpps_pin', cache:'tpps_cache', cola:'tpps_cola', demo:'tpps_demo', vista:'tpps_vista'};
+const DAY = 864e5;
+let S = null;                 // datos actuales
+let vista = 'mis';
+let filtroMis = 'activas';
+const G = {persona:'', cat:'', estado:'activas', escala:'dia'};
+let online = true;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MEM = {};   // respaldo en memoria si el navegador bloquea localStorage
+function ls(k, v){
+  try{
+    if (v === undefined){ const x = localStorage.getItem(k); return x ? JSON.parse(x) : (k in MEM ? clone(MEM[k]) : null); }
+    if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v));
+  }catch(e){
+    if (v === undefined) return k in MEM ? clone(MEM[k]) : null;
+    if (v === null) delete MEM[k]; else MEM[k] = clone(v);
+  }
+}
+const clone = o => JSON.parse(JSON.stringify(o));
+
+/* ---------- Fechas ---------- */
+const pad = n => String(n).padStart(2,'0');
+const ymd = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parseD = s => { const m = String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(+m[1], m[2]-1, +m[3]) : null; };
+const hoy = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const addD = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const diasEntre = (a, b) => Math.round((b - a) / DAY);
+const fmt = s => { const d = parseD(s); return d ? pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2) : '—'; };
+const fmtH = s => { const d = parseD(s); return d ? fmt(s) + (String(s).length > 10 ? ' ' + String(s).slice(11,16) : '') : '—'; };
+const nowStr = () => { const d = new Date(); return ymd(d)+' '+pad(d.getHours())+':'+pad(d.getMinutes()); };
+const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+/* ---------- Semáforo ---------- */
+const COL = {verde:'#2e7d32', ambar:'#f9a825', rojo:'#c62828', morado:'#7b1fa2', azul:'#0058A3', gris:'#78909c'};
+function semaforo(t){
+  if (t.Estado === 'Cerrada')     return {k:'cerrada',  txt:'Cerrada',     c:COL.verde};
+  if (t.Estado === 'Por validar') return {k:'validar',  txt:'Por validar', c:COL.azul};
+  if (t.Estado === 'Bloqueada')   return {k:'bloq',     txt:'Bloqueada',   c:COL.morado};
+  const h = hoy(), ini = parseD(t.Inicio), fin = parseD(t.Fin), av = +t.Avance || 0;
+  if (!ini || !fin) return {k:'sin', txt:t.Estado, c:COL.gris};
+  if (h > fin)  return {k:'atrasada', txt:'Atrasada', c:COL.rojo};
+  if (h < ini)  return {k:'futura',   txt:'Por iniciar', c:COL.gris};
+  const total = diasEntre(ini, fin) + 1, trans = diasEntre(ini, h);   // esperado al inicio del día de hoy
+  const esperado = Math.min(100, trans / total * 100), dif = av - esperado;
+  if (dif >= -10) return {k:'ok',     txt:'En plazo',  c:COL.verde};
+  if (dif >= -25) return {k:'riesgo', txt:'En riesgo', c:COL.ambar};
+  return {k:'retraso', txt:'Retrasada', c:COL.rojo};
+}
+const persona = id => (S.equipo.find(m => m.ID === id) || {}).Nombre || (id ? id : 'Sin asignar');
+const esAdmin = () => S && String(S.yo.Rol).toLowerCase() === 'admin';
+const puedeReportar = t => t.Estado !== 'Cerrada' && (t.ResponsableID === S.yo.ID || esAdmin());
+
+/* =========================================================
+   API (JSONP + cola offline)
+   ========================================================= */
+function jsonp(params, timeout = 25000){
+  return new Promise((res, rej) => {
+    const cb = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const s = document.createElement('script');
+    const fail = (m, net) => { cleanup(); const e = new Error(m); e.net = net; rej(e); };
+    const t = setTimeout(() => fail('Tiempo de espera agotado', true), timeout);
+    function cleanup(){ clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = r => { cleanup(); setOnline(true); if (r && r.ok) res(r.data); else { const e = new Error(r ? r.error : 'Respuesta vacía'); e.net = false; rej(e); } };
+    s.onerror = () => { setOnline(false); fail('Sin conexión con el servidor', true); };
+    s.src = API_URL + '?callback=' + cb + '&p=' + encodeURIComponent(JSON.stringify(params));
+    document.body.appendChild(s);
+  });
+}
+async function api(action, params = {}){
+  const p = Object.assign({action, pin: ls(K.pin)}, params);
+  if (DEMO) return mockRoute(clone(p));
+  return jsonp(p);
+}
+const cola = () => ls(K.cola) || [];
+
+function efectoReporte(p, admin){
+  const r = {UltimaActualizacion: p.fecha};
+  if (p.tipo === 'Avance'){ r.Avance = String(Math.max(0, Math.min(100, Math.round(+p.avance || 0)))); r.Estado = 'En curso'; }
+  else if (p.tipo === 'Bloqueo'){ r.Estado = 'Bloqueada'; }
+  else if (p.tipo === 'Cierre'){ r.Avance = '100'; r.Estado = admin ? 'Cerrada' : 'Por validar'; if (admin) r.FechaCierre = p.fecha; }
+  return r;
+}
+function aplicarLocal(p){
+  const t = S.tareas.find(x => x.ID === p.tareaId); if (!t) return;
+  Object.assign(t, efectoReporte(p, esAdmin()));
+  if (!S.bitacora.some(b => b.ID === p.uid))
+    S.bitacora.push({ID:p.uid, TareaID:p.tareaId, Fecha:p.fecha, AutorID:S.yo.ID, Tipo:p.tipo,
+      Avance: p.tipo === 'Novedad' ? '' : (t.Avance), Comentario:p.comentario, _pend:true});
+}
+async function sincronizar(){
+  if (DEMO) return;
+  let q = cola(); if (!q.length){ pintarSync(); return; }
+  let envio = false;
+  for (const item of q){
+    try{ await jsonp(item); envio = true; }
+    catch(e){
+      if (e.net) break;
+      toast('Un reporte en cola fue rechazado: ' + e.message, 'err');
+    }
+    ls(K.cola, cola().filter(x => x.uid !== item.uid));
+  }
+  pintarSync();
+  if (envio){ toast('Reportes pendientes enviados ✔', 'ok'); cargar().catch(()=>{}); }
+}
+function setOnline(v){ online = v; pintarSync(); }
+function pintarSync(){
+  const el = $('#sync'); if (!el) return;
+  const n = cola().length;
+  if (DEMO){ el.className = 'sync'; el.textContent = 'DEMO'; return; }
+  if (!online){ el.className = 'sync off'; el.textContent = n ? '⚠ Offline · ' + n : '⚠ Offline'; }
+  else if (n){ el.className = 'sync pend'; el.textContent = '⟳ ' + n + ' pend.'; }
+  else { el.className = 'sync'; el.textContent = '● En línea'; }
+}
+
+/* =========================================================
+   CARGA / SESIÓN
+   ========================================================= */
+async function cargar(){
+  const d = await api('data');
+  S = d;
+  cola().forEach(aplicarLocal);
+  ls(K.cache, S);
+  render();
+  return d;
+}
+function mostrarApp(){
+  $('#login').hidden = true; $('#app').hidden = false;
+  $('#demo-bar').hidden = !DEMO;
+}
+async function entrar(pin){
+  ls(K.pin, pin);
+  try{ await cargar(); mostrarApp(); render(); }
+  catch(e){ ls(K.pin, null); throw e; }
+}
+function salir(){
+  if (cola().length && !confirm('Tienes reportes sin enviar. Si sales se perderán. ¿Salir igual?')) return;
+  ls(K.pin, null); ls(K.cache, null); ls(K.cola, null); S = null;
+  $('#app').hidden = true; $('#login').hidden = false; $('#pin').value = ''; $('#pin').focus();
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render(){
+  if (!S) return;
+  $('#h-user').textContent = S.yo.Nombre + (S.yo.Cargo ? ' · ' + S.yo.Cargo : '') + (esAdmin() ? ' · Admin' : '');
+  $('#tab-admin').hidden = !esAdmin();
+  $('#tab-mis').hidden = esAdmin(); $('#tab-sup').hidden = !esAdmin();
+  $('#tabs').style.setProperty('--ntabs', esAdmin() ? 4 : 3);
+  const hh = document.querySelector('header').offsetHeight; if (hh) document.documentElement.style.setProperty('--hh', hh + 'px');
+  if (['admin','sup'].includes(vista) && !esAdmin()) vista = 'mis';
+  if (vista === 'mis' && esAdmin()) vista = 'sup';
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
+  ['mis','sup','gantt','dash','admin'].forEach(v => $('#v-' + v).hidden = v !== vista);
+  ({mis:renderMis, sup:renderSup, gantt:renderGantt, dash:renderDash, admin:renderAdmin})[vista]();
+  pintarSync();
+}
+
+function card(t, extra = ''){
+  const s = semaforo(t), av = +t.Avance || 0;
+  return `<article class="card" style="border-left-color:${s.c}" onclick="abrirTarea('${esc(t.ID)}')">
+    <div class="card-top"><span class="tid">${esc(t.ID)} · ${esc(t.Categoria || 'Sin categoría')}</span><span class="pill" style="background:${s.c}">${s.txt}</span></div>
+    <h3>${esc(t.Titulo)}</h3>
+    <div class="meta">📅 ${fmt(t.Inicio)} → ${fmt(t.Fin)} · <span class="prio-${esc(t.Prioridad)}">${esc(t.Prioridad)}</span></div>
+    <div class="bar"><div style="width:${av}%;background:${s.c}"></div></div>
+    <div class="meta2"><span><b>${av}%</b> · ${esc(t.Estado)}</span><span>${esc(persona(t.ResponsableID))}</span></div>
+    ${extra}
+  </article>`;
+}
+const ordenar = arr => arr.sort((a, b) => {
+  const ca = a.Estado === 'Cerrada', cb = b.Estado === 'Cerrada';
+  if (ca !== cb) return ca ? 1 : -1;
+  return String(a.Fin).localeCompare(String(b.Fin)) || ({Alta:0,Media:1,Baja:2}[a.Prioridad] - {Alta:0,Media:1,Baja:2}[b.Prioridad]);
+});
+
+/* ---------- MIS TAREAS ---------- */
+function renderMis(){
+  const yo = S.yo;
+  const mias = S.tareas.filter(t => t.ResponsableID === yo.ID);
+  const act = mias.filter(t => t.Estado !== 'Cerrada');
+  const atr = act.filter(t => ['atrasada','retraso'].includes(semaforo(t).k));
+  const disp = S.tareas.filter(t => !t.ResponsableID && t.Estado !== 'Cerrada');
+  let lista = mias.filter(t => filtroMis === 'activas' ? t.Estado !== 'Cerrada' : filtroMis === 'cerradas' ? t.Estado === 'Cerrada' : true);
+  ordenar(lista);
+  $('#v-mis').innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><b>${act.length}</b><span>Mis tareas activas</span></div>
+      <div class="kpi" style="border-top-color:${COL.rojo}"><b>${atr.length}</b><span>Atrasadas / retrasadas</span></div>
+      <div class="kpi" style="border-top-color:${COL.azul}"><b>${mias.filter(t => t.Estado === 'Por validar').length}</b><span>Esperando validación</span></div>
+      <div class="kpi" style="border-top-color:${COL.verde}"><b>${mias.filter(t => t.Estado === 'Cerrada').length}</b><span>Cerradas</span></div>
+    </div>
+    <h2>Mis tareas</h2>
+    <div class="chips">
+      ${['activas','cerradas','todas'].map(f => `<button class="chip ${filtroMis === f ? 'on' : ''}" onclick="filtroMis='${f}';renderMis()">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}
+    </div>
+    ${lista.length ? `<div class="grid">${lista.map(t => card(t)).join('')}</div>` : `<div class="vacio">No tienes tareas ${filtroMis === 'todas' ? '' : filtroMis} 🎉</div>`}
+    ${disp.length ? `<h2>Disponibles para tomar <span class="n">${disp.length}</span></h2>
+      <div class="grid">${ordenar(disp).map(t => card(t, `<div class="acciones"><button class="btn yellow sm" onclick="event.stopPropagation();tomar('${esc(t.ID)}')">✋ Tomar esta tarea</button></div>`)).join('')}</div>` : ''}
+  `;
+}
+
+/* ---------- DETALLE DE TAREA ---------- */
+let tipoRep = 'Avance';
+function abrirTarea(id){
+  const t = S.tareas.find(x => x.ID === id); if (!t) return;
+  const s = semaforo(t), av = +t.Avance || 0;
+  const bit = S.bitacora.filter(b => b.TareaID === id).sort((a, b) => String(b.Fecha).localeCompare(String(a.Fecha)));
+  const icon = {Avance:COL.azul, Novedad:COL.ambar, Bloqueo:COL.morado, Cierre:COL.verde, 'Validación':COL.verde, Rechazo:COL.rojo, 'Creación':COL.gris, 'Edición':COL.gris, 'Asignación':COL.gris, Recordatorio:'#e65100'};
+  tipoRep = 'Avance';
+  abrirModal(`
+    <div class="mh"><div><span class="tid">${esc(t.ID)} · ${esc(t.Categoria || '')}</span><h3>${esc(t.Titulo)}</h3>
+      <span class="pill" style="background:${s.c}">${s.txt}</span> <span class="pill" style="background:#90a4ae">${esc(t.Estado)}</span></div>
+      <button class="x" onclick="cerrarModal()">×</button></div>
+    ${t.Descripcion ? `<div class="desc">${esc(t.Descripcion)}</div>` : ''}
+    <div class="info">
+      <div><span>Responsable</span>${esc(persona(t.ResponsableID))}</div>
+      <div><span>Prioridad</span><b class="prio-${esc(t.Prioridad)}">${esc(t.Prioridad)}</b></div>
+      <div><span>Inicio</span>${fmt(t.Inicio)}</div>
+      <div><span>Término</span>${fmt(t.Fin)}</div>
+      <div><span>Avance</span><b>${av}%</b></div>
+      <div><span>${t.FechaCierre ? 'Cerrada el' : 'Última actualización'}</span>${fmtH(t.FechaCierre || t.UltimaActualizacion)}</div>
+    </div>
+    <div class="bar"><div style="width:${av}%;background:${s.c}"></div></div>
+
+    ${puedeReportar(t) ? `
+    <div class="box">
+      <h4>Reportar</h4>
+      <div class="seg" id="r-seg">
+        <button data-t="Avance" class="on">📈 Avance</button><button data-t="Novedad">📝 Novedad</button>
+        <button data-t="Bloqueo">⛔ Bloqueo</button><button data-t="Cierre">✅ Cierre</button>
+      </div>
+      <div id="r-av" style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>Avance</span><b id="r-avv">${av}%</b></div>
+        <input type="range" id="r-avance" min="0" max="100" step="5" value="${av}"></div>
+      <label class="fld"><span id="r-lab">Comentario (opcional)</span><textarea id="r-com" placeholder="¿Qué se hizo? ¿Qué falta?"></textarea></label>
+      <div class="acciones"><button class="btn primary" id="r-btn" onclick="enviarReporte('${esc(t.ID)}')">Guardar reporte</button></div>
+    </div>` : ''}
+
+    ${esAdmin() && t.Estado === 'Por validar' ? `
+    <div class="box" style="border-color:${COL.azul}"><h4>Validar cierre</h4>
+      <div class="acciones"><button class="btn green" onclick="validar('${esc(t.ID)}',true)">✔ Aprobar cierre</button>
+      <button class="btn red" onclick="validar('${esc(t.ID)}',false)">✖ Rechazar</button></div></div>` : ''}
+
+    <div class="box"><h4>Bitácora (${bit.length})</h4>
+      ${bit.length ? `<ul class="tl">${bit.map(b => `<li><i style="background:${icon[b.Tipo] || COL.gris}"></i>
+        <div class="h">${fmtH(b.Fecha)} · ${esc(persona(b.AutorID))} · <b>${esc(b.Tipo)}</b>${b.Avance !== '' && b.Avance != null ? ' · ' + esc(b.Avance) + '%' : ''}${b._pend ? '<span class="pend">pendiente de envío</span>' : ''}</div>
+        ${b.Comentario ? `<div class="c">${esc(b.Comentario)}</div>` : ''}</li>`).join('')}</ul>` : '<div class="meta">Sin registros aún.</div>'}
+    </div>
+
+    ${esAdmin() ? `<div class="acciones"><button class="btn" onclick="formTarea('${esc(t.ID)}')">✏️ Editar</button>
+      <button class="btn red" onclick="eliminarTarea('${esc(t.ID)}')">🗑 Eliminar</button></div>` : ''}
+  `);
+  const seg = $('#r-seg');
+  if (seg){
+    seg.onclick = e => {
+      const b = e.target.closest('button'); if (!b) return;
+      tipoRep = b.dataset.t;
+      seg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+      $('#r-av').hidden = tipoRep !== 'Avance';
+      $('#r-lab').textContent = tipoRep === 'Avance' ? 'Comentario (opcional)' : tipoRep === 'Cierre' ? 'Resultado / cierre (obligatorio)' : tipoRep === 'Bloqueo' ? '¿Qué lo bloquea? (obligatorio)' : 'Novedad (obligatorio)';
+      $('#r-btn').textContent = tipoRep === 'Cierre' ? (esAdmin() ? 'Cerrar tarea' : 'Enviar cierre a validación') : 'Guardar reporte';
+    };
+    $('#r-avance').oninput = e => $('#r-avv').textContent = e.target.value + '%';
+  }
+}
+
+async function enviarReporte(tareaId){
+  const com = $('#r-com').value.trim();
+  if (tipoRep !== 'Avance' && !com) return toast('Agrega un comentario', 'err');
+  const p = {action:'reportar', pin:ls(K.pin), tareaId, tipo:tipoRep, avance:+$('#r-avance').value, comentario:com,
+    uid:'B-' + Date.now() + '-' + Math.random().toString(36).slice(2,7), fecha:nowStr()};
+  const btn = $('#r-btn'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Guardando…';
+  try{
+    await (DEMO ? mockRoute(clone(p)) : jsonp(p));
+    cerrarModal(); toast('Reporte guardado ✔', 'ok'); await cargar();
+  }catch(e){
+    if (e.net){
+      ls(K.cola, [...cola(), p]); aplicarLocal(p); ls(K.cache, S);
+      cerrarModal(); render(); toast('Sin conexión: el reporte quedó en cola y se enviará solo', 'warn');
+    } else { toast(e.message, 'err'); btn.disabled = false; btn.textContent = 'Guardar reporte'; }
+  }
+}
+async function accion(action, params, okMsg){
+  try{ await api(action, params); toast(okMsg, 'ok'); cerrarModal(); await cargar(); return true; }
+  catch(e){ toast(e.message, 'err'); return false; }
+}
+function tomar(id){ if (confirm('¿Tomar la tarea ' + id + '? Quedará asignada a ti.')) accion('tomar', {tareaId:id}, 'Tarea asignada a ti ✔'); }
+function validar(id, aprobar){
+  const com = prompt(aprobar ? 'Comentario de aprobación (opcional):' : 'Motivo del rechazo (obligatorio):', '');
+  if (com === null) return;
+  if (!aprobar && !com.trim()) return toast('Indica el motivo del rechazo', 'err');
+  accion('validar', {tareaId:id, aprobar, comentario:com}, aprobar ? 'Cierre aprobado ✔' : 'Tarea devuelta al responsable');
+}
+function eliminarTarea(id){
+  const pin = prompt('Para eliminar ' + id + ' y toda su bitácora ingresa el PIN de borrado:');
+  if (pin) accion('eliminarTarea', {tareaId:id, pinBorrado:pin}, 'Tarea eliminada');
+}
+
+/* ---------- CARTA GANTT ---------- */
+function renderGantt(){
+  let ts = S.tareas.filter(t =>
+    (!G.persona || (G.persona === '_sin' ? !t.ResponsableID : t.ResponsableID === G.persona)) &&
+    (!G.cat || t.Categoria === G.cat) &&
+    (G.estado === 'todas' || (G.estado === 'activas' ? t.Estado !== 'Cerrada' : G.estado === 'atrasadas' ? ['atrasada','retraso','riesgo'].includes(semaforo(t).k) : t.Estado === 'Cerrada')) &&
+    parseD(t.Inicio) && parseD(t.Fin));
+  ts.sort((a, b) => a.Inicio.localeCompare(b.Inicio) || a.Fin.localeCompare(b.Fin));
+  const cats = [...new Set(S.tareas.map(t => t.Categoria).filter(Boolean))].sort();
+  const sel = (id, val, opts) => `<select onchange="G.${id}=this.value;renderGantt()">${opts.map(([v, l]) => `<option value="${esc(v)}" ${val === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+  let html = `<div class="g-ctrl">
+    ${sel('persona', G.persona, [['', '👥 Todo el equipo'], ['_sin', 'Sin asignar'], ...S.equipo.filter(m => m.Activo !== 'NO').map(m => [m.ID, m.Nombre])])}
+    ${sel('cat', G.cat, [['', '🏷 Todas las categorías'], ...cats.map(c => [c, c])])}
+    ${sel('estado', G.estado, [['activas', 'Activas'], ['atrasadas', 'Con retraso / riesgo'], ['cerradas', 'Cerradas'], ['todas', 'Todas']])}
+    ${sel('escala', G.escala, [['dia', '🔍 Días'], ['semana', 'Semanas'], ['mes', 'Meses']])}
+    <button class="btn sm" onclick="irHoy()">Hoy</button>
+  </div>`;
+  if (!ts.length){ $('#v-gantt').innerHTML = html + '<div class="vacio">No hay tareas para estos filtros.</div>'; return; }
+
+  let min = hoy(), max = hoy();
+  ts.forEach(t => { const i = parseD(t.Inicio), f = parseD(t.Fin); if (i < min) min = i; if (f > max) max = f; });
+  min = addD(min, G.escala === 'dia' ? -3 : -7); max = addD(max, G.escala === 'dia' ? 7 : 21);
+  const n = diasEntre(min, max) + 1;
+  // Ajusta el ancho de cada día para llenar la pantalla (PC) sin bajar del mínimo legible (celular)
+  const lw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lw')) || 240;
+  const disp = ($('#v-gantt').clientWidth || window.innerWidth - 28) - lw - 2;
+  const px = Math.max({dia:34, semana:13, mes:5}[G.escala], disp / n);
+  const W = Math.floor(n * px);
+  const hx = diasEntre(min, hoy()) * px;
+  const lunes = ((1 - min.getDay()) + 7) % 7;   // índice del primer lunes
+  const bg = G.escala === 'dia'
+    ? `background-image:linear-gradient(to right,transparent ${5*px}px,rgba(0,40,90,.045) ${5*px}px),linear-gradient(to right,#edf0f3 1px,transparent 1px);background-size:${7*px}px 100%,${px}px 100%;background-position:${lunes*px}px 0,0 0`
+    : `background-image:linear-gradient(to right,#e6eaee 1px,transparent 1px);background-size:${7*px}px 100%;background-position:${lunes*px}px 0`;
+
+  // Encabezado
+  let head = '';
+  for (let i = 0; i < n; i++){
+    const d = addD(min, i), x = i * px;
+    if (d.getDate() === 1 || i === 0) head += `<div class="g-h m" style="left:${x + 4}px">${MESES[d.getMonth()]} ${d.getFullYear()}</div>`;
+    if (G.escala === 'dia'){
+      const we = d.getDay() === 0 || d.getDay() === 6;
+      head += `<div class="g-h d ${we ? 'we' : ''}" style="left:${x}px;width:${px}px">${'DLMMJVS'[d.getDay()]}<br>${d.getDate()}</div>`;
+    } else if (G.escala === 'semana' && d.getDay() === 1){
+      head += `<div class="g-h d" style="left:${x + 2}px">${pad(d.getDate())}/${pad(d.getMonth()+1)}</div>`;
+    }
+  }
+  if (hx >= 0 && hx <= W && G.escala !== 'dia') head += `<div class="g-h t" style="left:${hx - 14}px">HOY</div>`;
+
+  let rows = `<div class="g-row g-head"><div class="g-lab">Tarea (${ts.length})</div><div class="g-track" style="width:${W}px;height:56px">${head}
+    ${hx >= 0 ? `<div class="g-today" style="left:${hx + (G.escala === 'dia' ? px/2 : 0)}px"></div>` : ''}</div></div>`;
+  ts.forEach(t => {
+    const s = semaforo(t), av = +t.Avance || 0;
+    const l = diasEntre(min, parseD(t.Inicio)) * px, w = (diasEntre(parseD(t.Inicio), parseD(t.Fin)) + 1) * px;
+    rows += `<div class="g-row">
+      <div class="g-lab" onclick="abrirTarea('${esc(t.ID)}')"><b>${esc(t.Titulo)}</b><small>${esc(t.ID)} · ${esc(persona(t.ResponsableID))}</small></div>
+      <div class="g-track" style="width:${W}px;${bg}">
+        ${hx >= 0 ? `<div class="g-today" style="left:${hx + (G.escala === 'dia' ? px/2 : 0)}px"></div>` : ''}
+        <div class="g-bar" style="left:${l}px;width:${w}px;border-color:${s.c}" onclick="abrirTarea('${esc(t.ID)}')" title="${esc(t.Titulo)} · ${av}% · ${s.txt}">
+          <div class="f" style="width:${av}%;background:${s.c}"></div><span>${av}%</span></div>
+      </div></div>`;
+  });
+  html += `<div class="g-wrap" id="g-wrap">${rows}</div>
+    <div class="leyenda">
+      <span><i style="background:${COL.verde}"></i>En plazo / cerrada</span><span><i style="background:${COL.ambar}"></i>En riesgo</span>
+      <span><i style="background:${COL.rojo}"></i>Retrasada / atrasada</span><span><i style="background:${COL.morado}"></i>Bloqueada</span>
+      <span><i style="background:${COL.azul}"></i>Por validar</span><span><i style="background:${COL.gris}"></i>Por iniciar</span>
+      <span><i style="background:${COL.rojo};width:3px"></i>Hoy</span></div>
+    <p class="meta">El relleno de cada barra es el % de avance reportado. El color compara el avance real contra el esperado según las fechas.</p>`;
+  $('#v-gantt').innerHTML = html;
+  window._gHoy = hx;
+  irHoy();
+}
+function irHoy(){ const w = $('#g-wrap'); if (w) w.scrollLeft = Math.max(0, (window._gHoy || 0) - 120); }
+
+/* ---------- RESUMEN / DASHBOARD ---------- */
+function renderDash(){
+  const T = S.tareas, act = T.filter(t => t.Estado !== 'Cerrada'), cerr = T.filter(t => t.Estado === 'Cerrada');
+  const k = t => semaforo(t).k;
+  const mes = ymd(hoy()).slice(0, 7);
+  const aTiempo = cerr.filter(t => String(t.FechaCierre).slice(0, 10) <= t.Fin).length;
+  const pct = cerr.length ? Math.round(aTiempo / cerr.length * 100) : 0;
+  const miembros = S.equipo.filter(m => m.Activo !== 'NO');
+  const filas = miembros.map(m => {
+    const mt = T.filter(t => t.ResponsableID === m.ID), ma = mt.filter(t => t.Estado !== 'Cerrada'), mc = mt.filter(t => t.Estado === 'Cerrada');
+    const prom = ma.length ? Math.round(ma.reduce((s, t) => s + (+t.Avance || 0), 0) / ma.length) : 0;
+    const at = mc.length ? Math.round(mc.filter(t => String(t.FechaCierre).slice(0, 10) <= t.Fin).length / mc.length * 100) : null;
+    return {m, ma:ma.length, atr:ma.filter(t => ['atrasada','retraso'].includes(k(t))).length, bloq:ma.filter(t => t.Estado === 'Bloqueada').length, mc:mc.length, prom, at};
+  }).filter(r => r.ma || r.mc).sort((a, b) => b.atr - a.atr || b.ma - a.ma);
+  const porCat = {}; act.forEach(t => { const c = t.Categoria || 'Sin categoría'; porCat[c] = (porCat[c] || 0) + 1; });
+  const maxCat = Math.max(1, ...Object.values(porCat));
+  const ult = [...S.bitacora].filter(b => ['Avance','Novedad','Bloqueo','Cierre','Rechazo','Validación'].includes(b.Tipo))
+    .sort((a, b) => String(b.Fecha).localeCompare(String(a.Fecha))).slice(0, 12);
+
+  $('#v-dash').innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><b>${act.length}</b><span>Tareas activas</span></div>
+      <div class="kpi" style="border-top-color:${COL.rojo}"><b>${act.filter(t => k(t) === 'atrasada').length}</b><span>Atrasadas (fuera de plazo)</span></div>
+      <div class="kpi" style="border-top-color:${COL.ambar}"><b>${act.filter(t => ['retraso','riesgo'].includes(k(t))).length}</b><span>En riesgo / retrasadas</span></div>
+      <div class="kpi" style="border-top-color:${COL.morado}"><b>${act.filter(t => t.Estado === 'Bloqueada').length}</b><span>Bloqueadas</span></div>
+      <div class="kpi" style="border-top-color:${COL.azul}"><b>${act.filter(t => t.Estado === 'Por validar').length}</b><span>Por validar</span></div>
+      <div class="kpi" style="border-top-color:${COL.verde}"><b>${cerr.filter(t => String(t.FechaCierre).startsWith(mes)).length}</b><span>Cerradas este mes</span></div>
+      <div class="kpi" style="border-top-color:${COL.verde}"><b>${pct}%</b><span>Cierre a tiempo (histórico)</span></div>
+      <div class="kpi" style="border-top-color:${COL.gris}"><b>${act.filter(t => !t.ResponsableID).length}</b><span>Sin asignar</span></div>
+    </div>
+    <h2>Por integrante</h2>
+    <div class="scroll-x"><table class="tabla"><tr><th>Integrante</th><th>Activas</th><th>Atrasadas</th><th>Bloq.</th><th>Avance prom.</th><th>Cerradas</th><th>A tiempo</th></tr>
+      ${filas.map(r => `<tr><td><b>${esc(r.m.Nombre)}</b><br><span class="meta">${esc(r.m.Cargo || '')}</span></td><td>${r.ma}</td>
+        <td style="color:${r.atr ? COL.rojo : 'inherit'};font-weight:${r.atr ? 700 : 400}">${r.atr}</td><td>${r.bloq}</td>
+        <td><div style="display:flex;align-items:center;gap:6px"><div class="mini"><div style="width:${r.prom}%"></div></div>${r.prom}%</div></td>
+        <td>${r.mc}</td><td>${r.at === null ? '—' : r.at + '%'}</td></tr>`).join('') || '<tr><td colspan="7" class="meta">Sin datos</td></tr>'}
+    </table></div>
+    <div class="two">
+      <div><h2>Activas por categoría</h2><div class="feed">
+        ${Object.entries(porCat).sort((a, b) => b[1] - a[1]).map(([c, v]) => `<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${esc(c)}</span><b>${v}</b></div>
+          <div class="mini" style="height:10px"><div style="width:${v / maxCat * 100}%"></div></div></div>`).join('') || '<div class="meta">Sin tareas activas</div>'}
+      </div></div>
+      <div><h2>Últimas novedades</h2><div class="feed">
+        ${ult.map(b => { const t = T.find(x => x.ID === b.TareaID); return `<div class="it" onclick="abrirTarea('${esc(b.TareaID)}')">
+          <div class="meta">${fmtH(b.Fecha)} · <b>${esc(persona(b.AutorID))}</b> · ${esc(b.Tipo)}${b.Avance !== '' && b.Avance != null ? ' ' + esc(b.Avance) + '%' : ''}</div>
+          <div><b>${esc(b.TareaID)}</b> ${esc(t ? t.Titulo : '')}</div>${b.Comentario ? `<div class="meta">${esc(b.Comentario)}</div>` : ''}</div>`; }).join('') || '<div class="meta">Sin movimientos</div>'}
+      </div></div>
+    </div>`;
+}
+
+/* ---------- SUPERVISIÓN (rol admin) ---------- */
+const DIAS_SIN_REPORTE = 3;
+let supFiltro = '';
+function diasDesde(s){ const d = parseD(s); return d ? diasEntre(d, hoy()) : 999; }
+function ultimaActividad(id){
+  const b = S.bitacora.filter(x => x.AutorID === id).sort((a, b) => String(b.Fecha).localeCompare(String(a.Fecha)))[0];
+  return b ? b.Fecha : '';
+}
+function renderSup(){
+  const act = S.tareas.filter(t => t.Estado !== 'Cerrada');
+  const k = t => semaforo(t).k;
+  const h = hoy(), en3 = ymd(addD(h, 3)), hs = ymd(h);
+  const grupos = [
+    {id:'validar', chip:'Por validar', ico:'✅', tit:'Cierres por validar', c:COL.azul, desc:'Revisa el resultado y aprueba o devuelve.',
+      ts:act.filter(t => t.Estado === 'Por validar'),
+      btn:t => `<button class="btn green sm" onclick="event.stopPropagation();validar('${esc(t.ID)}',true)">✔ Aprobar</button><button class="btn red sm" onclick="event.stopPropagation();validar('${esc(t.ID)}',false)">✖ Devolver</button>`},
+    {id:'bloq', chip:'Bloqueadas', ico:'⛔', tit:'Bloqueadas', c:COL.morado, desc:'Necesitan que destrabes algo (autorización, recursos, coordinación).',
+      ts:act.filter(t => t.Estado === 'Bloqueada'),
+      btn:t => `<button class="btn sm" onclick="event.stopPropagation();abrirTarea('${esc(t.ID)}')">Ver motivo</button>`},
+    {id:'atr', chip:'Atrasadas', ico:'🔴', tit:'Atrasadas o retrasadas', c:COL.rojo, desc:'Fuera de plazo o con avance muy bajo para la fecha.',
+      ts:act.filter(t => ['atrasada','retraso'].includes(k(t))),
+      btn:t => `<button class="btn sm" onclick="event.stopPropagation();recordar('${esc(t.ID)}')">📧 Pedir actualización</button><button class="btn sm" onclick="event.stopPropagation();formTarea('${esc(t.ID)}')">📅 Reprogramar</button>`},
+    {id:'silencio', chip:'Sin reportes', ico:'🔕', tit:'Sin reportes hace ' + DIAS_SIN_REPORTE + '+ días', c:COL.ambar, desc:'Tareas en curso sin novedades recientes del responsable.',
+      ts:act.filter(t => t.ResponsableID && ['Pendiente','En curso'].includes(t.Estado) && t.Inicio <= hs && !['atrasada','retraso'].includes(k(t)) && diasDesde(t.UltimaActualizacion) >= DIAS_SIN_REPORTE),
+      btn:t => `<button class="btn sm" onclick="event.stopPropagation();recordar('${esc(t.ID)}')">📧 Pedir actualización</button>`},
+    {id:'vence', chip:'Por vencer', ico:'⏰', tit:'Vencen en los próximos 3 días', c:'#e65100', desc:'Para anticiparte antes de que se atrasen.',
+      ts:act.filter(t => t.Fin >= hs && t.Fin <= en3 && !['Por validar','Bloqueada'].includes(t.Estado) && !['atrasada','retraso'].includes(k(t))),
+      btn:() => ''},
+    {id:'sin', chip:'Sin asignar', ico:'👤', tit:'Sin asignar', c:COL.gris, desc:'Asígnalas o deja que el equipo las tome.',
+      ts:act.filter(t => !t.ResponsableID),
+      btn:t => `<select onclick="event.stopPropagation()" onchange="asignarRapido('${esc(t.ID)}',this.value)" style="border:1px solid #cfd6de;border-radius:8px;padding:6px;flex:1">
+        <option value="">Asignar a…</option>${S.equipo.filter(m => m.Activo !== 'NO').map(m => `<option value="${esc(m.ID)}">${esc(m.Nombre)}</option>`).join('')}</select>`}
+  ];
+  const total = grupos.reduce((s, g) => s + g.ts.length, 0);
+  const vis = supFiltro ? grupos.filter(g => g.id === supFiltro) : grupos.filter(g => g.ts.length);
+
+  // Carga del equipo
+  const equipo = S.equipo.filter(m => m.Activo !== 'NO' && m.Rol !== 'admin').map(m => {
+    const ma = act.filter(t => t.ResponsableID === m.ID);
+    return {m, ma, atr:ma.filter(t => ['atrasada','retraso'].includes(k(t))).length, bloq:ma.filter(t => t.Estado === 'Bloqueada').length,
+      prom:ma.length ? Math.round(ma.reduce((s, t) => s + (+t.Avance || 0), 0) / ma.length) : 0, ult:ultimaActividad(m.ID)};
+  }).sort((a, b) => b.atr - a.atr || b.ma.length - a.ma.length);
+  const maxCarga = Math.max(1, ...equipo.map(e => e.ma.length));
+  const mias = act.filter(t => t.ResponsableID === S.yo.ID);
+
+  $('#v-sup').innerHTML = `
+    <div class="acciones top-acc"><button class="btn primary" onclick="formTarea()">＋ Asignar nueva tarea</button></div>
+    <h2>Requiere tu atención <span class="n">${total}</span></h2>
+    <div class="chips">
+      <button class="chip ${!supFiltro ? 'on' : ''}" onclick="supFiltro='';renderSup()">Todo</button>
+      ${grupos.map(g => `<button class="chip ${supFiltro === g.id ? 'on' : ''}" onclick="supFiltro='${g.id}';renderSup()" ${g.ts.length ? '' : 'style="opacity:.5"'}>${g.ico} ${g.chip} <b>${g.ts.length}</b></button>`).join('')}
+    </div>
+    ${!vis.length || (supFiltro && !vis[0].ts.length) ? `<div class="vacio">${supFiltro ? 'Nada en esta categoría.' : '✅ Todo bajo control. No hay nada pendiente de tu acción.'}</div>` : ''}
+    <div class="sup-wrap">${vis.filter(g => g.ts.length).map(g => `
+      <div class="sup-g" style="border-left-color:${g.c}">
+        <div class="sup-h"><b>${g.ico} ${g.tit}</b> <span class="pill" style="background:${g.c}">${g.ts.length}</span><div class="meta">${g.desc}</div></div>
+        ${ordenar(g.ts).map(t => { const s = semaforo(t), av = +t.Avance || 0, d = diasDesde(t.UltimaActualizacion); return `
+          <div class="sup-it" onclick="abrirTarea('${esc(t.ID)}')">
+            <div class="sup-l"><div><b>${esc(t.Titulo)}</b></div>
+              <div class="meta">${esc(t.ID)} · ${esc(persona(t.ResponsableID))} · vence ${fmt(t.Fin)} · <span class="prio-${esc(t.Prioridad)}">${esc(t.Prioridad)}</span>${t.ResponsableID ? ' · último reporte ' + (d === 0 ? 'hoy' : d === 1 ? 'ayer' : 'hace ' + d + ' días') : ''}</div>
+              <div class="bar" style="margin:6px 0 0"><div style="width:${av}%;background:${s.c}"></div></div></div>
+            <div class="sup-a">${g.btn(t)}</div>
+          </div>`; }).join('')}
+      </div>`).join('')}</div>
+
+    <h2>Carga del equipo</h2>
+    <div class="grid">
+      ${equipo.map(e => `<div class="card" style="border-left-color:${e.atr ? COL.rojo : e.bloq ? COL.morado : COL.verde}" onclick="verPersonaGantt('${esc(e.m.ID)}')">
+        <div class="card-top"><b style="font-size:15px">${esc(e.m.Nombre)}</b><span class="meta">${esc(e.m.Cargo || '')}${e.m.Turno ? ' · Turno ' + esc(e.m.Turno) : ''}</span></div>
+        <div style="display:flex;gap:14px;margin:8px 0 2px;font-size:13px">
+          <span><b style="font-size:18px">${e.ma.length}</b> activas</span>
+          <span style="color:${e.atr ? COL.rojo : 'inherit'}"><b style="font-size:18px">${e.atr}</b> atrasadas</span>
+          <span style="color:${e.bloq ? COL.morado : 'inherit'}"><b style="font-size:18px">${e.bloq}</b> bloq.</span></div>
+        <div class="meta">Carga</div><div class="bar" style="margin:3px 0 6px"><div style="width:${e.ma.length / maxCarga * 100}%;background:var(--azul)"></div></div>
+        <div class="meta2"><span>Avance prom. <b>${e.prom}%</b></span><span>Último reporte: ${e.ult ? fmtH(e.ult) : '—'}</span></div>
+      </div>`).join('') || '<div class="vacio">Agrega integrantes en Administrar</div>'}
+    </div>
+    <p class="meta">Toca a una persona para ver sus tareas en la Carta Gantt.</p>
+    ${mias.length ? `<h2>Asignadas a mí <span class="n">${mias.length}</span></h2><div class="grid">${ordenar(mias).map(t => card(t)).join('')}</div>` : ''}
+  `;
+}
+function verPersonaGantt(id){ G.persona = id; G.estado = 'activas'; vista = 'gantt'; render(); window.scrollTo(0, 0); }
+async function asignarRapido(id, resp){
+  if (!resp) return;
+  const t = S.tareas.find(x => x.ID === id);
+  await accion('guardarTarea', {tarea:{ID:t.ID, Titulo:t.Titulo, Descripcion:t.Descripcion, Categoria:t.Categoria, Prioridad:t.Prioridad, ResponsableID:resp, Inicio:t.Inicio, Fin:t.Fin}}, 'Asignada a ' + persona(resp) + ' ✔');
+}
+function recordar(id){
+  const t = S.tareas.find(x => x.ID === id);
+  const msg = prompt('Mensaje para ' + persona(t.ResponsableID) + ' (se envía por correo y queda en la bitácora):', 'Por favor actualiza el avance de esta tarea.');
+  if (msg && msg.trim()) accion('recordar', {tareaId:id, mensaje:msg.trim()}, 'Solicitud enviada ✔');
+}
+
+/* ---------- ADMINISTRAR ---------- */
+function renderAdmin(){
+  $('#v-admin').innerHTML = `
+    <div class="acciones top-acc"><button class="btn primary" onclick="formTarea()">＋ Nueva tarea</button>
+      <button class="btn" onclick="formMiembro()">＋ Agregar integrante</button></div>
+    <h2>Todas las tareas <span class="n">${S.tareas.length}</span></h2>
+    <div class="scroll-x"><table class="tabla"><tr><th>ID</th><th>Tarea</th><th>Responsable</th><th>Plazo</th><th>Avance</th><th>Estado</th></tr>
+      ${ordenar([...S.tareas]).map(t => { const s = semaforo(t); return `<tr style="cursor:pointer" onclick="abrirTarea('${esc(t.ID)}')"><td>${esc(t.ID)}</td><td>${esc(t.Titulo)}</td>
+        <td>${esc(persona(t.ResponsableID))}</td><td style="white-space:nowrap">${fmt(t.Inicio)} → ${fmt(t.Fin)}</td><td>${+t.Avance || 0}%</td>
+        <td><span class="pill" style="background:${s.c}">${s.txt}</span></td></tr>`; }).join('') || '<tr><td colspan="6" class="meta">Aún no hay tareas</td></tr>'}
+    </table></div>
+    <h2>Equipo <span class="n">${S.equipo.length}</span></h2>
+    <div class="scroll-x"><table class="tabla"><tr><th>Nombre</th><th>Cargo</th><th>Turno</th><th>Email</th><th>Rol</th><th>Activo</th><th></th></tr>
+      ${S.equipo.map(m => `<tr style="${m.Activo === 'NO' ? 'opacity:.5' : ''}"><td><b>${esc(m.Nombre)}</b></td><td>${esc(m.Cargo)}</td><td>${esc(m.Turno)}</td><td>${esc(m.Email)}</td>
+        <td>${m.Rol === 'admin' ? '<span class="pill" style="background:var(--azul)">admin</span>' : 'usuario'}</td><td>${esc(m.Activo || 'SI')}</td>
+        <td><button class="btn sm" onclick="formMiembro('${esc(m.ID)}')">Editar</button></td></tr>`).join('')}
+    </table></div>`;
+}
+
+function formTarea(id){
+  const t = id ? S.tareas.find(x => x.ID === id) : {Prioridad:'Media', Inicio:ymd(hoy()), Fin:ymd(addD(hoy(), 7))};
+  const cats = [...new Set([...CATEGORIAS, ...S.tareas.map(x => x.Categoria).filter(Boolean)])];
+  abrirModal(`
+    <div class="mh"><h3>${id ? 'Editar ' + esc(id) : 'Nueva tarea'}</h3><button class="x" onclick="cerrarModal()">×</button></div>
+    <form id="f-t">
+      <label class="fld"><span>Título *</span><input name="Titulo" required maxlength="120" value="${esc(t.Titulo || '')}"></label>
+      <label class="fld"><span>Descripción / instrucciones</span><textarea name="Descripcion">${esc(t.Descripcion || '')}</textarea></label>
+      <div class="row2">
+        <label class="fld"><span>Categoría</span><input name="Categoria" list="dl-cat" value="${esc(t.Categoria || '')}"><datalist id="dl-cat">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist></label>
+        <label class="fld"><span>Prioridad</span><select name="Prioridad">${['Alta','Media','Baja'].map(p => `<option ${t.Prioridad === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>
+      </div>
+      <label class="fld"><span>Responsable</span><select name="ResponsableID"><option value="">— Sin asignar (disponible para tomar) —</option>
+        ${S.equipo.filter(m => m.Activo !== 'NO' || m.ID === t.ResponsableID).map(m => `<option value="${esc(m.ID)}" ${t.ResponsableID === m.ID ? 'selected' : ''}>${esc(m.Nombre)}${m.Cargo ? ' · ' + esc(m.Cargo) : ''}</option>`).join('')}</select></label>
+      <div class="row2">
+        <label class="fld"><span>Inicio *</span><input type="date" name="Inicio" required value="${esc(t.Inicio || '')}"></label>
+        <label class="fld"><span>Término *</span><input type="date" name="Fin" required value="${esc(t.Fin || '')}"></label>
+      </div>
+      <div class="acciones"><button type="button" class="btn" onclick="cerrarModal()">Cancelar</button><button class="btn primary" id="ft-btn">${id ? 'Guardar cambios' : 'Crear y asignar'}</button></div>
+    </form>`);
+  $('#f-t').onsubmit = async e => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(e.target));
+    if (d.Fin < d.Inicio) return toast('La fecha de término es anterior al inicio', 'err');
+    if (id) d.ID = id;
+    $('#ft-btn').disabled = true;
+    if (!await accion('guardarTarea', {tarea:d}, id ? 'Tarea actualizada ✔' : 'Tarea creada ✔')) $('#ft-btn').disabled = false;
+  };
+}
+
+function formMiembro(id){
+  const m = id ? S.equipo.find(x => x.ID === id) : {Rol:'usuario', Activo:'SI'};
+  abrirModal(`
+    <div class="mh"><h3>${id ? 'Editar integrante' : 'Nuevo integrante'}</h3><button class="x" onclick="cerrarModal()">×</button></div>
+    <form id="f-m">
+      <label class="fld"><span>Nombre *</span><input name="Nombre" required value="${esc(m.Nombre || '')}"></label>
+      <div class="row2"><label class="fld"><span>Cargo</span><input name="Cargo" value="${esc(m.Cargo || '')}" placeholder="Guardia, Operador CCTV…"></label>
+        <label class="fld"><span>Turno</span><input name="Turno" value="${esc(m.Turno || '')}" placeholder="A, B, C, Noche…"></label></div>
+      <label class="fld"><span>Email (para avisos)</span><input type="email" name="Email" value="${esc(m.Email || '')}"></label>
+      <div class="row2"><label class="fld"><span>PIN ${id ? '(vacío = no cambiar)' : '*'}</span><input name="PIN" inputmode="numeric" pattern="\\d{4,8}" maxlength="8" ${id ? '' : 'required'}></label>
+        <label class="fld"><span>Rol</span><select name="Rol"><option value="usuario">Usuario</option><option value="admin" ${m.Rol === 'admin' ? 'selected' : ''}>Administrador</option></select></label></div>
+      <label class="fld"><span>Activo</span><select name="Activo"><option>SI</option><option ${m.Activo === 'NO' ? 'selected' : ''}>NO</option></select></label>
+      <div class="acciones"><button type="button" class="btn" onclick="cerrarModal()">Cancelar</button><button class="btn primary">Guardar</button></div>
+    </form>`);
+  $('#f-m').onsubmit = e => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(e.target)); if (id) d.ID = id;
+    accion('guardarMiembro', {miembro:d}, 'Integrante guardado ✔');
+  };
+}
+
+/* ---------- MODAL / TOAST ---------- */
+function abrirModal(h){ $('#mbox').innerHTML = h; $('#modal').hidden = false; $('#mbox').scrollTop = 0; }
+function cerrarModal(){ $('#modal').hidden = true; $('#mbox').innerHTML = ''; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') cerrarModal(); });
+function toast(m, tipo = ''){
+  const d = document.createElement('div'); d.className = tipo; d.textContent = m;
+  $('#toast').appendChild(d); setTimeout(() => d.remove(), 3800);
+}
+
+/* =========================================================
+   MODO DEMO (backend simulado en el navegador)
+   ========================================================= */
+function seedDemo(){
+  const o = n => ymd(addD(hoy(), n)), h = n => o(n) + ' 09:30';
+  return {
+    equipo:[
+      {ID:'U-0001', Nombre:'Gabriel', Cargo:'Jefe PPS', Turno:'', Email:'', PIN:'1234', Rol:'admin', Activo:'SI'},
+      {ID:'U-0002', Nombre:'Camila Rojas', Cargo:'Supervisora', Turno:'A', Email:'', PIN:'1111', Rol:'usuario', Activo:'SI'},
+      {ID:'U-0003', Nombre:'Pedro Soto', Cargo:'Operador CCTV', Turno:'B', Email:'', PIN:'2222', Rol:'usuario', Activo:'SI'},
+      {ID:'U-0004', Nombre:'Javiera Muñoz', Cargo:'Guardia', Turno:'C', Email:'', PIN:'3333', Rol:'usuario', Activo:'SI'}],
+    tareas:[
+      {ID:'T-0001', Titulo:'Revisión CCTV andenes 3 a 8 – faltante OLPN', Descripcion:'Revisar grabaciones del turno noche del día del faltante y levantar informe.', Categoria:'CCTV / Investigación', Prioridad:'Alta', ResponsableID:'U-0003', Inicio:o(-6), Fin:o(-1), Avance:'70', Estado:'En curso', CreadoPor:'U-0001', FechaCreacion:h(-6), FechaCierre:'', UltimaActualizacion:h(-2)},
+      {ID:'T-0002', Titulo:'Auditoría de sellos contenedores semana', Descripcion:'Cruzar sellos registrados vs físicos en patio.', Categoria:'Auditoría', Prioridad:'Media', ResponsableID:'U-0002', Inicio:o(-3), Fin:o(4), Avance:'50', Estado:'En curso', CreadoPor:'U-0001', FechaCierre:'', FechaCreacion:h(-3), UltimaActualizacion:h(-1)},
+      {ID:'T-0003', Titulo:'Actualizar base de bloqueados Control 4', Descripcion:'', Categoria:'Control de acceso', Prioridad:'Media', ResponsableID:'U-0004', Inicio:o(-2), Fin:o(5), Avance:'10', Estado:'En curso', CreadoPor:'U-0001', FechaCierre:'', FechaCreacion:h(-2), UltimaActualizacion:h(-1)},
+      {ID:'T-0004', Titulo:'Capacitación protocolo rechazo de contenedores', Descripcion:'Preparar material y coordinar con turnos A, B y C.', Categoria:'Capacitación', Prioridad:'Baja', ResponsableID:'U-0002', Inicio:o(3), Fin:o(12), Avance:'0', Estado:'Pendiente', CreadoPor:'U-0001', FechaCierre:'', FechaCreacion:h(-1), UltimaActualizacion:h(-1)},
+      {ID:'T-0005', Titulo:'Informe incidencias aduana del mes', Descripcion:'', Categoria:'Aduana', Prioridad:'Alta', ResponsableID:'U-0003', Inicio:o(-8), Fin:o(-2), Avance:'100', Estado:'Por validar', CreadoPor:'U-0001', FechaCierre:'', FechaCreacion:h(-8), UltimaActualizacion:h(-2)},
+      {ID:'T-0006', Titulo:'Inventario cíclico zona de alto valor', Descripcion:'', Categoria:'Inventario / Mermas', Prioridad:'Alta', ResponsableID:'U-0004', Inicio:o(-1), Fin:o(6), Avance:'0', Estado:'Bloqueada', CreadoPor:'U-0001', FechaCierre:'', FechaCreacion:h(-1), UltimaActualizacion:h(0)},
+      {ID:'T-0007', Titulo:'Revisión cámaras perimetrales sector norte', Descripcion:'Verificar ángulos y puntos ciegos tras poda.', Categoria:'CCTV / Investigación', Prioridad:'Media', ResponsableID:'', Inicio:o(1), Fin:o(8), Avance:'0', Estado:'Pendiente', CreadoPor:'U-0001', FechaCierre:'', FechaCreacion:h(0), UltimaActualizacion:h(0)},
+      {ID:'T-0008', Titulo:'Control de guías: auditoría SLA octubre', Descripcion:'', Categoria:'Auditoría', Prioridad:'Media', ResponsableID:'U-0002', Inicio:o(-20), Fin:o(-12), Avance:'100', Estado:'Cerrada', CreadoPor:'U-0001', FechaCierre:h(-13), FechaCreacion:h(-20), UltimaActualizacion:h(-13)}],
+    bitacora:[
+      {ID:'B-1', TareaID:'T-0001', Fecha:h(-4), AutorID:'U-0003', Tipo:'Avance', Avance:'30', Comentario:'Revisadas cámaras andén 3 y 4.'},
+      {ID:'B-2', TareaID:'T-0001', Fecha:h(-2), AutorID:'U-0003', Tipo:'Novedad', Avance:'', Comentario:'Se observa pallet sin film en andén 6 a las 03:12. Falta revisar 7 y 8.'},
+      {ID:'B-3', TareaID:'T-0001', Fecha:h(-2), AutorID:'U-0003', Tipo:'Avance', Avance:'70', Comentario:''},
+      {ID:'B-4', TareaID:'T-0002', Fecha:h(-1), AutorID:'U-0002', Tipo:'Avance', Avance:'50', Comentario:'20 de 40 contenedores revisados.'},
+      {ID:'B-5', TareaID:'T-0005', Fecha:h(-2), AutorID:'U-0003', Tipo:'Cierre', Avance:'100', Comentario:'Informe enviado por correo con 14 incidencias.'},
+      {ID:'B-6', TareaID:'T-0006', Fecha:h(0), AutorID:'U-0004', Tipo:'Bloqueo', Avance:'0', Comentario:'Zona con acceso restringido, falta autorización de jefatura de bodega.'}]
+  };
+}
+function mockRoute(p){
+  const db = ls(K.demo) || seedDemo();
+  const u = db.equipo.find(m => m.PIN === String(p.pin || '') && m.Activo !== 'NO');
+  if (!u) throw new Error('PIN no válido');
+  const admin = u.Rol === 'admin';
+  const pub = m => { const c = {...m}; delete c.PIN; return c; };
+  const T = id => { const t = db.tareas.find(x => x.ID === id); if (!t) throw new Error('Tarea no encontrada'); return t; };
+  const log = (TareaID, Tipo, Avance, Comentario, ID, Fecha) => db.bitacora.push({ID:ID || 'B-' + Date.now() + Math.random(), TareaID, Fecha:Fecha || nowStr(), AutorID:u.ID, Tipo, Avance:Avance ?? '', Comentario:Comentario || ''});
+  const soloAdmin = () => { if (!admin) throw new Error('Solo un administrador puede hacer esto'); };
+  const nextId = (l, pre) => pre + String(Math.max(0, ...l.map(o => +(String(o.ID).match(/(\d+)$/) || [0, 0])[1])) + 1).padStart(4, '0');
+  let r = {ok:true};
+  switch (p.action){
+    case 'login': r = pub(u); break;
+    case 'data': return clone({yo:pub(u), equipo:db.equipo.map(pub), tareas:db.tareas, bitacora:db.bitacora});
+    case 'reportar': {
+      const t = T(p.tareaId);
+      if (!admin && t.ResponsableID !== u.ID) throw new Error('Esta tarea no está asignada a ti');
+      if (t.Estado === 'Cerrada') throw new Error('La tarea ya está cerrada');
+      if (db.bitacora.some(b => b.ID === p.uid)) break;
+      Object.assign(t, efectoReporte(p, admin));
+      log(t.ID, p.tipo, p.tipo === 'Novedad' ? '' : t.Avance, p.comentario, p.uid, p.fecha); break;
+    }
+    case 'recordar': { soloAdmin(); const t = T(p.tareaId); log(t.ID, 'Recordatorio', '', p.mensaje); break; }
+    case 'tomar': { const t = T(p.tareaId); if (t.ResponsableID) throw new Error('Esta tarea ya fue tomada'); t.ResponsableID = u.ID; t.UltimaActualizacion = nowStr(); log(t.ID, 'Asignación', '', u.Nombre + ' tomó la tarea'); break; }
+    case 'validar': {
+      soloAdmin(); const t = T(p.tareaId);
+      if (p.aprobar){ t.Estado = 'Cerrada'; t.FechaCierre = nowStr(); log(t.ID, 'Validación', 100, p.comentario || 'Cierre aprobado'); }
+      else { t.Estado = 'En curso'; t.Avance = '90'; log(t.ID, 'Rechazo', 90, p.comentario); }
+      t.UltimaActualizacion = nowStr(); break;
+    }
+    case 'guardarTarea': {
+      soloAdmin(); const d = p.tarea;
+      let t = d.ID ? T(d.ID) : null; const nueva = !t;
+      if (!t){ t = {ID:nextId(db.tareas, 'T-'), Avance:'0', Estado:'Pendiente', CreadoPor:u.ID, FechaCreacion:nowStr(), FechaCierre:''}; db.tareas.push(t); }
+      Object.assign(t, {Titulo:d.Titulo, Descripcion:d.Descripcion, Categoria:d.Categoria, Prioridad:d.Prioridad, ResponsableID:d.ResponsableID, Inicio:d.Inicio, Fin:d.Fin, UltimaActualizacion:nowStr()});
+      log(t.ID, nueva ? 'Creación' : 'Edición', '', nueva ? 'Tarea creada' : 'Tarea editada'); break;
+    }
+    case 'eliminarTarea': {
+      soloAdmin(); if (p.pinBorrado !== '358097') throw new Error('PIN de borrado incorrecto');
+      db.tareas = db.tareas.filter(t => t.ID !== p.tareaId); db.bitacora = db.bitacora.filter(b => b.TareaID !== p.tareaId); break;
+    }
+    case 'guardarMiembro': {
+      soloAdmin(); const d = p.miembro;
+      let m = d.ID ? db.equipo.find(x => x.ID === d.ID) : null;
+      if (d.PIN && db.equipo.some(x => x.PIN === d.PIN && x.ID !== d.ID)) throw new Error('Ese PIN ya está en uso');
+      if (!m){ if (!d.PIN) throw new Error('Asigna un PIN'); m = {ID:nextId(db.equipo, 'U-')}; db.equipo.push(m); }
+      Object.assign(m, {Nombre:d.Nombre, Cargo:d.Cargo, Turno:d.Turno, Email:d.Email, Rol:d.Rol, Activo:d.Activo}); if (d.PIN) m.PIN = d.PIN; break;
+    }
+    default: throw new Error('Acción no válida');
+  }
+  ls(K.demo, db);
+  return clone(r);
+}
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+if (LOGO){ ['#login-logo', '#h-logo'].forEach(s => $(s).innerHTML = `<img src="${LOGO}" alt="PPS">`); }
+$('#demo-note').hidden = !DEMO;
+$('#reset-demo').onclick = e => { e.preventDefault(); ls(K.demo, null); toast('Datos demo restablecidos', 'ok'); };
+$('#f-login').onsubmit = async e => {
+  e.preventDefault();
+  const pin = $('#pin').value.trim(); if (!pin) return;
+  const b = $('#b-login'); b.disabled = true; b.innerHTML = '<span class="spin"></span>';
+  try{ await entrar(pin); }
+  catch(err){ toast(err.message, 'err'); $('#pin').select(); }
+  b.disabled = false; b.textContent = 'Ingresar';
+};
+$('#tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; vista = b.dataset.v; ls(K.vista, vista); render(); window.scrollTo(0, 0); };
+$('#b-out').onclick = salir;
+$('#b-ref').onclick = async () => { $('#b-ref').innerHTML = '<span class="spin"></span>'; try{ await sincronizar(); await cargar(); toast('Actualizado', 'ok'); }catch(e){ toast(e.message, e.net ? 'warn' : 'err'); } $('#b-ref').textContent = '⟳'; };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+window.addEventListener('online', () => sincronizar());
+let _rz; window.addEventListener('resize', () => { clearTimeout(_rz); _rz = setTimeout(() => { if (S && !$('#app').hidden) render(); }, 200); });
+
+(async function init(){
+  vista = ls(K.vista) || 'mis';
+  if (!ls(K.pin)) return;
+  const cache = ls(K.cache);
+  if (cache){ S = cache; mostrarApp(); render(); }
+  try{ await sincronizar(); await cargar(); mostrarApp(); }
+  catch(e){
+    if (e.net && cache){ toast('Sin conexión: mostrando últimos datos guardados', 'warn'); }
+    else if (!e.net){ toast(e.message, 'err'); ls(K.pin, null); $('#app').hidden = true; $('#login').hidden = false; }
+  }
+})();
+setInterval(() => { if (S && !document.hidden && $('#modal').hidden){ sincronizar(); cargar().catch(() => {}); } }, 120000);
+</script>
+</body>
+</html>
